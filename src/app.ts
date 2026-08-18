@@ -23,10 +23,6 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/admin", adminRoutes);
 
 // Permite acceder a la wishlist con una URL sencilla.
-app.get("/wishlist", (_req, res) => {
-  res.sendFile(path.join(process.cwd(), "public", "wishlist.html"));
-});
-
 // Ruta propia para que /wishlist no sea tratado como la página de inicio.
 app.get(["/admin", "/admin/"], (_req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "admin.html"));

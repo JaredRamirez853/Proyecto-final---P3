@@ -139,6 +139,46 @@ router.get("/", async (req, res) => {
   }
 });
 
+
+router.get("/admin/list", authenticate, requireAdmin, async (req, res) => {
+  try {
+    const search = String(req.query.q ?? "").trim();
+    const limit = Math.min(
+      Math.max(Number(req.query.limit ?? 100), 1),
+      300
+    );
+
+    const values: any[] = [];
+    let where = "";
+
+    if (search) {
+      where = "WHERE title LIKE ?";
+      values.push(`%${search}%`);
+    }
+
+    values.push(limit);
+
+    const [rows] = await pool.query(
+      `SELECT id, title, release_date, genre, rating,
+              image_url, custom_image_url, is_on_sale,
+              discount_percent, original_price, sale_price
+       FROM games
+       ${where}
+       ORDER BY title ASC
+       LIMIT ?`,
+      values
+    );
+
+    return res.json(rows);
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "No fue posible consultar el catálogo administrativo."
+    });
+  }
+});
+
 router.get("/external/rawg/:id", async (req, res) => {
   try {
     const data = await getRawgGame(Number(req.params.id));
@@ -260,9 +300,21 @@ router.put("/:id", authenticate, requireAdmin, async (req, res) => {
     }
 
     values.push(req.params.id);
-    await pool.query(`UPDATE games SET ${updates.join(", ")} WHERE id = ?`, values);
 
-    return res.json({ message: "Videojuego actualizado." });
+    const [result] = await pool.query(
+      `UPDATE games SET ${updates.join(", ")} WHERE id = ?`,
+      values
+    );
+
+    if ((result as any).affectedRows === 0) {
+      return res.status(404).json({
+        message: "Videojuego no encontrado."
+      });
+    }
+
+    return res.json({
+      message: "Videojuego actualizado correctamente."
+    });
   } catch {
     return res.status(500).json({ message: "No fue posible actualizar el videojuego." });
   }
@@ -270,10 +322,26 @@ router.put("/:id", authenticate, requireAdmin, async (req, res) => {
 
 router.delete("/:id", authenticate, requireAdmin, async (req, res) => {
   try {
-    await pool.query("DELETE FROM games WHERE id = ?", [req.params.id]);
-    return res.json({ message: "Videojuego eliminado." });
-  } catch {
-    return res.status(500).json({ message: "No fue posible eliminar el videojuego." });
+    const [result] = await pool.query(
+      "DELETE FROM games WHERE id = ?",
+      [req.params.id]
+    );
+
+    if ((result as any).affectedRows === 0) {
+      return res.status(404).json({
+        message: "Videojuego no encontrado."
+      });
+    }
+
+    return res.json({
+      message: "Videojuego eliminado correctamente."
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "No fue posible eliminar el videojuego."
+    });
   }
 });
 

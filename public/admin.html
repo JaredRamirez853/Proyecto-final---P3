@@ -65,9 +65,33 @@
         <div id="usersList" class="users-list"></div>
       </div>
 
+
+      <div class="admin-panel admin-games-panel">
+        <div class="panel-header">
+          <div>
+            <h2>Catálogo actual</h2>
+            <p class="panel-subtitle">Edita o elimina videojuegos registrados en GameHub.</p>
+          </div>
+          <span id="gamesStatus"></span>
+        </div>
+
+        <div class="admin-search">
+          <input
+            type="search"
+            id="adminGameSearch"
+            placeholder="Buscar en GameHub..."
+          >
+          <button id="searchAdminGamesBtn" class="secondary-button">
+            Buscar
+          </button>
+        </div>
+
+        <div id="adminGamesList" class="admin-games-list"></div>
+      </div>
+
       <div class="admin-panel admin-game-panel">
         <div class="panel-header">
-          <h2>Nuevo videojuego</h2>
+          <h2 id="gameFormTitle">Nuevo videojuego</h2>
           <button id="clearFormBtn" class="secondary-button">Limpiar</button>
         </div>
 
