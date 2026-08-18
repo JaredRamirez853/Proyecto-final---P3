@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Wishlist | GameHub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/logo-transparent.png" alt="GameHub">
+    </a>
+
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/novedades.html">Novedades</a>
+      <a href="/ofertas.html">Ofertas</a>
+      <a href="/proximamente.html">Próximamente</a>
+      <a href="/todos.html">Todos los juegos</a>
+    </nav>
+
+    <div class="actions">
+      <button id="wishlistBtn" class="secondary-button">Wishlist</button>
+      <button id="loginBtn">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <p class="eyebrow">TU COLECCIÓN</p>
+          <h1>Mi Wishlist</h1>
+        </div>
+        <span id="wishlistCount"></span>
+      </div>
+
+      <p id="wishlistMessage" class="wishlist-message"></p>
+      <div id="wishlistGrid" class="game-grid"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button class="close" id="closeModal">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="/js/wishlist.js"></script>
+</body>
+</html>

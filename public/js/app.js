@@ -46,8 +46,58 @@ async function getJson(url) {
   return response.json();
 }
 
+async function getAuthToken() {
+  return localStorage.getItem("gamehub_token");
+}
+
+async function checkWishlist(gameId) {
+  const token = await getAuthToken();
+
+  if (!token) {
+    return false;
+  }
+
+  const response = await fetch(`/api/wishlist/contains/${gameId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+
+  const data = await response.json();
+  return data.inWishlist;
+}
+
+async function addToWishlist(gameId) {
+  const token = await getAuthToken();
+
+  if (!token) {
+    window.location.href = "/login.html";
+    return;
+  }
+
+  const response = await fetch(`/api/wishlist/${gameId}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.message || "No fue posible agregar el juego.");
+  }
+
+  return data;
+}
+
 async function showGame(id) {
   const game = await getJson(`/api/games/${id}`);
+  const inWishlist = await checkWishlist(id);
 
   const stores = (game.stores || [])
     .map((store) => `
@@ -71,11 +121,13 @@ async function showGame(id) {
       <div class="sale-detail">
         <span class="sale-label">Oferta</span>
         <strong>-${Number(game.discount_percent || 0)}%</strong>
+
         ${
           game.original_price
             ? `<span class="old-price">$${Number(game.original_price).toFixed(2)}</span>`
             : ""
         }
+
         ${
           game.sale_price
             ? `<span class="sale-price">$${Number(game.sale_price).toFixed(2)}</span>`
@@ -87,6 +139,7 @@ async function showGame(id) {
 
   modalContent.innerHTML = `
     <div class="detail">
+
       <div class="detail-image-wrapper">
         <img
           src="${gameImage(game)}"
@@ -96,17 +149,21 @@ async function showGame(id) {
       </div>
 
       <div class="detail-content">
+
         <div class="detail-topline">
           <span class="eyebrow">
             ${escapeHtml(game.genre || "Videojuego")}
           </span>
+
           ${rating}
         </div>
 
         <h2>${escapeHtml(game.title)}</h2>
 
         <p class="detail-description">
-          ${escapeHtml(game.description || "No hay una descripción disponible.")}
+          ${escapeHtml(
+            game.description || "No hay una descripción disponible."
+          )}
         </p>
 
         <div class="detail-info">
@@ -123,17 +180,45 @@ async function showGame(id) {
 
         ${saleInfo}
 
+        <div class="wishlist-action">
+          ${
+            inWishlist
+              ? `<button class="wishlist-button active" disabled>✓ En tu wishlist</button>`
+              : `<button class="wishlist-button" id="addWishlistBtn">♡ Agregar a wishlist</button>`
+          }
+        </div>
+
         <div class="stores-section">
           <h3>Disponible en</h3>
+
           <div class="stores-list">
             ${stores}
           </div>
         </div>
+
       </div>
     </div>
   `;
 
   modal.classList.remove("hidden");
+
+  document.getElementById("addWishlistBtn")?.addEventListener("click", async () => {
+    const button = document.getElementById("addWishlistBtn");
+
+    try {
+      button.disabled = true;
+      button.textContent = "Agregando...";
+
+      await addToWishlist(game.id);
+
+      button.classList.add("active");
+      button.textContent = "✓ En tu wishlist";
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = "♡ Agregar a wishlist";
+      alert(error.message);
+    }
+  });
 }
 
 async function loadHome() {
@@ -251,14 +336,33 @@ function updateAuthButton() {
 }
 
 updateAuthButton();
+document.getElementById("wishlistBtn")?.addEventListener("click", () => {
+  if (localStorage.getItem("gamehub_token")) {
+    window.location.href = "/wishlist";
+    return;
+  }
+
+  window.location.href = "/login.html";
+});
+
 document.getElementById("applyFilters")?.addEventListener("click", () => loadAllGames().catch((error) => alert(error.message)));
 
 (async () => {
   try {
     const page = getCurrentPage();
-    if (page === "inicio") await loadHome();
-    else if (page === "todos") { populateYears(); await loadAllGames(); }
-    else await loadSection(page);
+    if (page === "inicio") {
+      await loadHome();
+
+      const gameId = new URLSearchParams(window.location.search).get("game");
+      if (gameId) {
+        await showGame(gameId);
+      }
+    } else if (page === "todos") {
+      populateYears();
+      await loadAllGames();
+    } else {
+      await loadSection(page);
+    }
   } catch (error) {
     console.error(error);
     const targets = [catalog, pageGames, document.getElementById("categoryAccion"), document.getElementById("categoryRpg")];

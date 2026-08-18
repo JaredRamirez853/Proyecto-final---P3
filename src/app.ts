@@ -20,6 +20,11 @@ app.use("/api/auth", authRoutes);
 app.use("/api/games", gamesRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 
+// Permite acceder a la wishlist con una URL sencilla.
+app.get("/wishlist", (_req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "wishlist.html"));
+});
+
 app.get("*", (_req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "index.html"));
 });
