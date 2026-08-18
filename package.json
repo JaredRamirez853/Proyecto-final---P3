@@ -11,7 +11,8 @@
     "test:watch": "jest --watch",
     "db:seed": "tsx src/db/seed.ts",
     "db:seed:rawg": "tsx src/db/seedRawg.ts",
-    "test:coverage": "jest --runInBand --coverage"
+    "test:coverage": "jest --runInBand --coverage",
+    "test:report": "jest --runInBand --coverage"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -33,6 +34,7 @@
     "supertest": "^7.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
-    "ts-jest": "^29.2.5"
+    "ts-jest": "^29.2.5",
+    "jest-html-reporter": "^4.3.0"
   }
 }

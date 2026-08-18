@@ -76,3 +76,23 @@ Ejecutar todas las pruebas:
 ```bash
 npm test
 ```
+
+## Reporte HTML de pruebas
+
+Después de ejecutar:
+
+```bash
+npm run test:report
+```
+
+Jest genera el reporte visual en:
+
+```text
+test-report/test-report.html
+```
+
+También se genera la cobertura dentro de:
+
+```text
+coverage/lcov-report/index.html
+```
