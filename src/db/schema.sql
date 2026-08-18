@@ -1,0 +1,61 @@
+CREATE DATABASE IF NOT EXISTS gamehub;
+USE gamehub;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(80) NOT NULL UNIQUE,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  role ENUM('USER', 'ADMIN') NOT NULL DEFAULT 'USER',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS stores (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS games (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  rawg_id INT NULL UNIQUE,
+  title VARCHAR(200) NOT NULL,
+  description TEXT,
+  release_date DATE NULL,
+  image_url TEXT,
+  custom_image_url TEXT,
+  genre VARCHAR(150),
+  platform VARCHAR(150) DEFAULT 'PC',
+  rating DECIMAL(3,2) NOT NULL DEFAULT 0,
+  is_on_sale BOOLEAN NOT NULL DEFAULT FALSE,
+  discount_percent INT NOT NULL DEFAULT 0,
+  original_price DECIMAL(10,2) NULL,
+  sale_price DECIMAL(10,2) NULL,
+  category_id INT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_game_category FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS game_stores (
+  game_id INT NOT NULL,
+  store_id INT NOT NULL,
+  url TEXT NOT NULL,
+  PRIMARY KEY (game_id, store_id),
+  CONSTRAINT fk_game_store_game FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE,
+  CONSTRAINT fk_game_store_store FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS wishlist (
+  user_id INT NOT NULL,
+  game_id INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (user_id, game_id),
+  CONSTRAINT fk_wishlist_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_wishlist_game FOREIGN KEY (game_id) REFERENCES games(id) ON DELETE CASCADE
+);
+

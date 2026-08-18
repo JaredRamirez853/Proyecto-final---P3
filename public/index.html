@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameHub | Inicio</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/"><img src="/logo-transparent.png" alt="GameHub"></a>
+    <nav>
+      <a class="active" href="/">Inicio</a>
+      <a href="/novedades.html">Novedades</a>
+      <a href="/ofertas.html">Ofertas</a>
+      <a href="/proximamente.html">Próximamente</a>
+      <a href="/todos.html">Todos los juegos</a>
+    </nav>
+    <div class="actions">
+      <input id="searchInput" type="search" placeholder="Buscar juegos">
+      <button id="searchBtn">Buscar</button>
+      <button id="loginBtn">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero home-hero">
+      <div class="hero-content">
+        <img class="hero-logo" src="/logo-transparent.png" alt="GameHub">
+        <p>Descubre videojuegos, consulta su información y encuentra dónde conseguirlos.</p>
+        <a class="hero-button" href="/todos.html">Explorar juegos</a>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title"><h2>Destacados</h2><span id="resultInfo"></span></div>
+      <div id="catalog" class="game-grid horizontal-grid"></div>
+    </section>
+
+    <section class="section category-section">
+      <div class="section-title"><h2>Novedades</h2><a href="/novedades.html">Ver todos</a></div>
+      <div id="homeNovedades" class="game-grid horizontal-grid"></div>
+    </section>
+
+    <section class="section category-section">
+      <div class="section-title"><h2>Ofertas</h2><a href="/ofertas.html">Ver todos</a></div>
+      <div id="homeOfertas" class="game-grid horizontal-grid"></div>
+    </section>
+
+    <section class="section category-section">
+      <div class="section-title"><h2>Próximamente</h2><a href="/proximamente.html">Ver todos</a></div>
+      <div id="homeProximamente" class="game-grid horizontal-grid"></div>
+    </section>
+
+    <section class="section category-section">
+      <div class="section-title"><h2>Explorar por género</h2><a href="/todos.html">Ver todos</a></div>
+      <div class="genre-links">
+        <a href="/todos.html?genre=Acción">Acción</a>
+        <a href="/todos.html?genre=RPG">RPG</a>
+        <a href="/todos.html?genre=Aventura">Aventura</a>
+        <a href="/todos.html?genre=Estrategia">Estrategia</a>
+        <a href="/todos.html?genre=Terror">Terror</a>
+        <a href="/todos.html?genre=Indie">Indie</a>
+      </div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button class="close" id="closeModal">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

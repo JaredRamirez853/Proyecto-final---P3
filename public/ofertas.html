@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameHub | Ofertas</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/"><img src="/logo-transparent.png" alt="GameHub"></a>
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/novedades.html">Novedades</a>
+      <a class="active" href="/ofertas.html">Ofertas</a>
+      <a href="/proximamente.html">Próximamente</a><a href="/todos.html">Todos los juegos</a>
+    </nav>
+    <div class="actions">
+      <input id="searchInput" type="search" placeholder="Buscar juegos">
+      <button id="searchBtn">Buscar</button>
+      <button id="loginBtn">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-banner sale-banner">
+      <div>
+        <p class="eyebrow">AHORRA EN TUS JUEGOS</p>
+        <h1>Ofertas</h1>
+        <p>Videojuegos con descuentos registrados en GameHub.</p>
+      </div>
+    </section>
+
+    <section class="section page-section">
+      <div id="pageGames" class="game-grid"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden"><div class="modal-card"><button class="close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+  <script src="/js/app.js"></script>
+</body>
+</html>

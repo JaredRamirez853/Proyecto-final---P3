@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GameHub | Todos los juegos</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/"><img src="/logo-transparent.png" alt="GameHub"></a>
+    <nav>
+      <a href="/">Inicio</a><a href="/novedades.html">Novedades</a><a href="/ofertas.html">Ofertas</a><a href="/proximamente.html">Próximamente</a><a class="active" href="/todos.html">Todos los juegos</a>
+    </nav>
+    <div class="actions">
+      <input id="searchInput" type="search" placeholder="Buscar juegos">
+      <button id="searchBtn">Buscar</button>
+      <button id="loginBtn">Iniciar sesión</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-banner all-banner">
+      <div><p class="eyebrow">CATÁLOGO COMPLETO</p><h1>Todos los juegos</h1><p>Ordena y filtra el catálogo según lo que estás buscando.</p></div>
+    </section>
+
+    <section class="section filters-section">
+      <div class="filters">
+        <label>Año
+          <select id="yearFilter"><option value="">Todos</option></select>
+        </label>
+        <label>Género
+          <select id="genreFilter">
+            <option value="">Todos</option>
+            <option value="Acción">Acción</option>
+            <option value="RPG">RPG</option>
+            <option value="Aventura">Aventura</option>
+            <option value="Estrategia">Estrategia</option>
+            <option value="Terror">Terror</option>
+            <option value="Indie">Indie</option>
+          </select>
+        </label>
+        <label>Ordenar por
+          <select id="sortFilter">
+            <option value="rating">Calificación</option>
+            <option value="rating_asc">Calificación menor</option>
+            <option value="year">Año</option>
+            <option value="title">Nombre</option>
+          </select>
+        </label>
+        <button id="applyFilters">Aplicar filtros</button>
+      </div>
+    </section>
+
+    <section class="section page-section">
+      <div class="section-title"><h2>Catálogo</h2><span id="resultInfo"></span></div>
+      <div id="pageGames" class="game-grid"></div>
+    </section>
+  </main>
+
+  <div id="modal" class="modal hidden"><div class="modal-card"><button class="close" id="closeModal">×</button><div id="modalContent"></div></div></div>
+  <script src="/js/app.js"></script>
+</body>
+</html>
