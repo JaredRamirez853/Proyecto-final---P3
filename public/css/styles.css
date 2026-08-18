@@ -879,3 +879,55 @@ button:hover {
     flex: 1;
   }
 }
+
+/* Distribución del panel administrativo */
+.admin-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr);
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-game-panel {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.admin-users-panel {
+  grid-column: 2;
+  grid-row: 1;
+  margin-top: 0;
+}
+
+.admin-layout > .admin-panel:first-child {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.admin-form select,
+.admin-users-panel select,
+.role-select {
+  color: #f8fafc;
+  background-color: #0f172a;
+  border: 1px solid #475569;
+}
+
+.admin-form select option,
+.admin-users-panel select option,
+.role-select option {
+  color: #f8fafc;
+  background-color: #0f172a;
+}
+
+@media (max-width: 1000px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-layout > .admin-panel:first-child,
+  .admin-users-panel,
+  .admin-game-panel {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}

@@ -20,6 +20,14 @@ function escapeHtml(value = "") {
 function formatAdminDate(value) {
   if (!value) return "";
 
+  const match = String(value).match(/\d{4}-\d{2}-\d{2}/);
+
+  return match ? match[0] : String(value).trim();
+}
+
+function formatAdminDate(value) {
+  if (!value) return "";
+
   const clean = String(value).replace(/[}]/g, "").trim();
   const match = clean.match(/^\d{4}-\d{2}-\d{2}/);
 
@@ -74,7 +82,7 @@ function fillForm(game) {
   document.getElementById("gameTitle").value = game.name ?? "";
   document.getElementById("gameDescription").value =
     game.description_raw ?? game.description ?? "";
-  document.getElementById("gameRelease").value = game.released ?? "";
+  document.getElementById("gameRelease").value = formatAdminDate(game.released);
   document.getElementById("gameGenre").value =
     (game.genres || []).slice(0, 3).map((genre) => genre.name).join(", ");
   document.getElementById("gamePlatform").value =
@@ -201,7 +209,7 @@ async function searchRawg() {
           <p>
             ${game.released
               ? escapeHtml(formatAdminDate(game.released))
-              : "Fecha por confirmar"}
+              : "Fecha por confirmar"
           }
           </p>
           <p>★ ${Number(game.rating || 0).toFixed(1)}</p>
