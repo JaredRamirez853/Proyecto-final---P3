@@ -150,10 +150,6 @@ document.addEventListener("click", (event) => {
   }
 });
 
-document.getElementById("wishlistBtn")?.addEventListener("click", () => {
-  window.location.href = "/wishlist";
-});
-
 function updateWishlistAuthButton() {
   const button = document.getElementById("loginBtn");
 

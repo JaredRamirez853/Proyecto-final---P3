@@ -618,3 +618,19 @@ button:hover {
   min-height: 20px;
   color: #38bdf8;
 }
+
+.wishlist-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.wishlist-card .card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.wishlist-card .remove-wishlist {
+  margin-top: auto;
+}
