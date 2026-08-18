@@ -197,7 +197,7 @@ async function seedRawg() {
       Boolean(
         game.released &&
         game.released >= RECENT_START &&
-        game.released <= RECENT_END &&
+        game.released <= today &&
         isPcGame(game) &&
         isSafeForGameHub(game)
       ),
@@ -389,7 +389,7 @@ async function seedRawg() {
   }
 
   const [[recentCount]] = await pool.query(
-    "SELECT COUNT(*) AS total FROM games WHERE release_date BETWEEN '2025-01-01' AND '2026-12-31'"
+    "SELECT COUNT(*) AS total FROM games WHERE release_date BETWEEN '2025-01-01' AND CURDATE()"
   );
   const [[upcomingCount]] = await pool.query(
     "SELECT COUNT(*) AS total FROM games WHERE release_date > CURDATE()"

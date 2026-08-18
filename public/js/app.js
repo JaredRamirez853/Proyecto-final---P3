@@ -48,20 +48,91 @@ async function getJson(url) {
 
 async function showGame(id) {
   const game = await getJson(`/api/games/${id}`);
-  const stores = (game.stores || []).map((store) => `<a class="store-link" href="${store.url}" target="_blank" rel="noreferrer">${escapeHtml(store.name)}</a>`).join("");
+
+  const stores = (game.stores || [])
+    .map((store) => `
+      <a
+        class="store-link"
+        href="${store.url}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        ${escapeHtml(store.name)}
+      </a>
+    `)
+    .join("");
+
+  const rating = game.rating
+    ? `<span class="detail-rating">★ ${Number(game.rating).toFixed(1)}</span>`
+    : "";
+
+  const saleInfo = game.is_on_sale
+    ? `
+      <div class="sale-detail">
+        <span class="sale-label">Oferta</span>
+        <strong>-${Number(game.discount_percent || 0)}%</strong>
+        ${
+          game.original_price
+            ? `<span class="old-price">$${Number(game.original_price).toFixed(2)}</span>`
+            : ""
+        }
+        ${
+          game.sale_price
+            ? `<span class="sale-price">$${Number(game.sale_price).toFixed(2)}</span>`
+            : ""
+        }
+      </div>
+    `
+    : "";
+
   modalContent.innerHTML = `
     <div class="detail">
-      <img src="${gameImage(game)}" alt="${escapeHtml(game.title)}">
-      <div>
-        <p class="eyebrow">${escapeHtml(game.genre || "Videojuego")}</p>
-        <h2>${escapeHtml(game.title)}</h2>
-        <p class="detail-description">${escapeHtml(game.description || "Sin descripción disponible.")}</p>
-        <p><strong>Lanzamiento:</strong> ${formatDate(game.release_date)}</p>
-        <p><strong>Plataforma:</strong> ${escapeHtml(game.platform || "PC")}</p>
-        ${game.is_on_sale ? `<p class="sale-detail">Oferta activa: -${Number(game.discount_percent)}%</p>` : ""}
-        <div><h3>Tiendas</h3>${stores || "<p>No hay tiendas registradas.</p>"}</div>
+      <div class="detail-image-wrapper">
+        <img
+          src="${gameImage(game)}"
+          alt="${escapeHtml(game.title)}"
+          class="detail-image"
+        >
       </div>
-    </div>`;
+
+      <div class="detail-content">
+        <div class="detail-topline">
+          <span class="eyebrow">
+            ${escapeHtml(game.genre || "Videojuego")}
+          </span>
+          ${rating}
+        </div>
+
+        <h2>${escapeHtml(game.title)}</h2>
+
+        <p class="detail-description">
+          ${escapeHtml(game.description || "No hay una descripción disponible.")}
+        </p>
+
+        <div class="detail-info">
+          <p>
+            <strong>Lanzamiento:</strong>
+            ${formatDate(game.release_date)}
+          </p>
+
+          <p>
+            <strong>Plataforma:</strong>
+            ${escapeHtml(game.platform || "PC")}
+          </p>
+        </div>
+
+        ${saleInfo}
+
+        <div class="stores-section">
+          <h3>Disponible en</h3>
+          <div class="stores-list">
+            ${stores}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+
   modal.classList.remove("hidden");
 }
 

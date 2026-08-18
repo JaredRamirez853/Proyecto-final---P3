@@ -76,7 +76,7 @@ router.get("/new", async (_req, res) => {
   try {
     const [rows] = await pool.query(
       `SELECT * FROM games
-       WHERE release_date BETWEEN '2025-01-01' AND '2026-12-31'
+       WHERE release_date BETWEEN '2025-01-01' AND CURDATE()
        ORDER BY release_date DESC, rating DESC, title ASC
        LIMIT 40`
     );
@@ -139,6 +139,15 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.get("/external/rawg/:id", async (req, res) => {
+  try {
+    const data = await getRawgGame(Number(req.params.id));
+    return res.json(data);
+  } catch (error) {
+    return res.status(502).json({ message: error instanceof Error ? error.message : "Error consultando RAWG." });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const [rows] = await pool.query(
@@ -155,13 +164,37 @@ router.get("/:id", async (req, res) => {
       return res.status(404).json({ message: "Videojuego no encontrado." });
     }
 
-    const [stores] = await pool.query(
+    const [storeRows] = await pool.query(
       `SELECT s.id, s.name, gs.url
        FROM game_stores gs
        JOIN stores s ON s.id = gs.store_id
        WHERE gs.game_id = ?`,
       [req.params.id]
     );
+
+    let stores = storeRows as any[];
+
+    if (stores.length === 0) {
+      const encodedTitle = encodeURIComponent(game.title);
+
+      stores = [
+        {
+          id: 1,
+          name: "Steam",
+          url: `https://store.steampowered.com/search/?term=${encodedTitle}`
+        },
+        {
+          id: 2,
+          name: "Epic Games",
+          url: `https://store.epicgames.com/en-US/browse?q=${encodedTitle}`
+        },
+        {
+          id: 3,
+          name: "GOG",
+          url: `https://www.gog.com/en/games?query=${encodedTitle}`
+        }
+      ];
+    }
 
     return res.json({
       ...game,
@@ -170,15 +203,6 @@ router.get("/:id", async (req, res) => {
     });
   } catch {
     return res.status(500).json({ message: "No fue posible consultar el videojuego." });
-  }
-});
-
-router.get("/external/rawg/:id", async (req, res) => {
-  try {
-    const data = await getRawgGame(Number(req.params.id));
-    return res.json(data);
-  } catch (error) {
-    return res.status(502).json({ message: error instanceof Error ? error.message : "Error consultando RAWG." });
   }
 });
 
