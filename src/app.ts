@@ -26,6 +26,10 @@ app.get("/wishlist", (_req, res) => {
 });
 
 // Ruta propia para que /wishlist no sea tratado como la página de inicio.
+app.get(["/profile", "/profile/"], (_req, res) => {
+  res.sendFile(path.join(process.cwd(), "public", "profile.html"));
+});
+
 app.get(["/wishlist", "/wishlist/"], (_req, res) => {
   res.sendFile(path.join(process.cwd(), "public", "wishlist.html"));
 });

@@ -154,6 +154,85 @@ router.post("/login", async (req, res) => {
   }
 });
 
+
+router.put("/profile", authenticate, async (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const updates: string[] = [];
+    const values: any[] = [];
+
+    if (username !== undefined) {
+      const normalizedUsername = String(username).trim();
+
+      if (normalizedUsername.length < 3) {
+        return res.status(400).json({
+          message: "El username debe tener al menos 3 caracteres."
+        });
+      }
+
+      const [existing] = await pool.query(
+        "SELECT id FROM users WHERE username = ? AND id <> ? LIMIT 1",
+        [normalizedUsername, req.user!.id]
+      );
+
+      if ((existing as any[]).length > 0) {
+        return res.status(409).json({
+          message: "Ese username ya está en uso."
+        });
+      }
+
+      updates.push("username = ?");
+      values.push(normalizedUsername);
+    }
+
+    if (password !== undefined) {
+      if (String(password).length < 6) {
+        return res.status(400).json({
+          message: "La contraseña debe tener al menos 6 caracteres."
+        });
+      }
+
+      // El cambio de contraseña vuelve a generar el hash antes de guardarlo.
+      const passwordHash = await bcrypt.hash(String(password), 10);
+
+      updates.push("password_hash = ?");
+      values.push(passwordHash);
+    }
+
+    if (updates.length === 0) {
+      return res.status(400).json({
+        message: "No hay cambios para actualizar."
+      });
+    }
+
+    values.push(req.user!.id);
+
+    await pool.query(
+      `UPDATE users SET ${updates.join(", ")} WHERE id = ?`,
+      values
+    );
+
+    const [rows] = await pool.query(
+      `SELECT id, username, email, role
+       FROM users
+       WHERE id = ?
+       LIMIT 1`,
+      [req.user!.id]
+    );
+
+    return res.json({
+      message: "Perfil actualizado correctamente.",
+      user: (rows as any[])[0]
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "No fue posible actualizar el perfil."
+    });
+  }
+});
+
 router.get("/me", authenticate, async (req, res) => {
   try {
     const [rows] = await pool.query(

@@ -634,3 +634,43 @@ button:hover {
 .wishlist-card .remove-wishlist {
   margin-top: auto;
 }
+
+.profile-card {
+  width: min(560px, 100%);
+  background: #111827;
+  border: 1px solid #263449;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, .25);
+}
+
+.profile-info {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.profile-info div {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  background: #0f172a;
+  border: 1px solid #263449;
+}
+
+.profile-info span {
+  color: #94a3b8;
+}
+
+.profile-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-card input {
+  width: 100%;
+  padding: 12px 14px;
+}

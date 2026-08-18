@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi perfil | GameHub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/logo-transparent.png" alt="GameHub">
+    </a>
+
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/novedades.html">Novedades</a>
+      <a href="/ofertas.html">Ofertas</a>
+      <a href="/proximamente.html">Próximamente</a>
+      <a href="/todos.html">Todos los juegos</a>
+    </nav>
+
+    <div class="actions">
+      <button id="wishlistBtn" class="secondary-button">Wishlist</button>
+      <button id="logoutBtn">Cerrar sesión</button>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <section class="profile-card">
+      <div class="auth-header">
+        <p class="eyebrow">CUENTA</p>
+        <h1>Mi perfil</h1>
+        <p>Administra la información de tu cuenta en GameHub.</p>
+      </div>
+
+      <div class="profile-info">
+        <div>
+          <span>Correo electrónico</span>
+          <strong id="profileEmail">Cargando...</strong>
+        </div>
+
+        <div>
+          <span>Rol</span>
+          <strong id="profileRole">Cargando...</strong>
+        </div>
+      </div>
+
+      <form id="profileForm">
+        <label for="profileUsername">Nombre de usuario</label>
+        <input
+          type="text"
+          id="profileUsername"
+          minlength="3"
+          required
+          autocomplete="username"
+        >
+
+        <label for="profilePassword">Nueva contraseña</label>
+        <input
+          type="password"
+          id="profilePassword"
+          minlength="6"
+          placeholder="Dejar vacío para no cambiarla"
+          autocomplete="new-password"
+        >
+
+        <label for="profilePasswordConfirm">Confirmar nueva contraseña</label>
+        <input
+          type="password"
+          id="profilePasswordConfirm"
+          minlength="6"
+          placeholder="Repite la nueva contraseña"
+          autocomplete="new-password"
+        >
+
+        <button type="submit" class="primary-button">
+          Guardar cambios
+        </button>
+
+        <p id="profileMessage" class="form-message"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="/js/profile.js"></script>
+</body>
+</html>

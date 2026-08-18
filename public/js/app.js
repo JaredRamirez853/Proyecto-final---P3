@@ -310,6 +310,15 @@ document.getElementById("searchBtn")?.addEventListener("click", async () => {
 document.getElementById("searchInput")?.addEventListener("keydown", (event) => { if (event.key === "Enter") document.getElementById("searchBtn")?.click(); });
 function updateAuthButton() {
   const loginButton = document.getElementById("loginBtn");
+  const wishlistButton = document.getElementById("wishlistBtn");
+
+  if (wishlistButton) {
+    wishlistButton.onclick = () => {
+      const token = localStorage.getItem("gamehub_token");
+      window.location.href = token ? "/wishlist" : "/login.html";
+    };
+  }
+
   if (!loginButton) return;
 
   const token = localStorage.getItem("gamehub_token");
@@ -324,14 +333,13 @@ function updateAuthButton() {
   }
 
   const user = userRaw ? JSON.parse(userRaw) : null;
+
   loginButton.textContent = user?.username
-    ? `${user.username} | Cerrar sesión`
-    : "Cerrar sesión";
+    ? user.username
+    : "Mi perfil";
 
   loginButton.onclick = () => {
-    localStorage.removeItem("gamehub_token");
-    localStorage.removeItem("gamehub_user");
-    window.location.href = "/";
+    window.location.href = "/profile";
   };
 }
 
