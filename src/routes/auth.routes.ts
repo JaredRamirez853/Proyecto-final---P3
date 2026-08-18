@@ -12,31 +12,77 @@ router.post("/register", async (req, res) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
-      return res.status(400).json({ message: "Username, email y password son obligatorios." });
+      return res.status(400).json({
+        message: "Username, email y contraseña son obligatorios."
+      });
+    }
+
+    if (username.trim().length < 3) {
+      return res.status(400).json({
+        message: "El username debe tener al menos 3 caracteres."
+      });
     }
 
     if (password.length < 6) {
-      return res.status(400).json({ message: "La contraseña debe tener al menos 6 caracteres." });
+      return res.status(400).json({
+        message: "La contraseña debe tener al menos 6 caracteres."
+      });
     }
 
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUsername = username.trim();
+
     const [existing] = await pool.query(
-      "SELECT id FROM users WHERE username = ? OR email = ?",
-      [username, email]
+      "SELECT id FROM users WHERE username = ? OR email = ? LIMIT 1",
+      [normalizedUsername, normalizedEmail]
     );
 
     if ((existing as any[]).length > 0) {
-      return res.status(409).json({ message: "El usuario o correo ya existe." });
+      return res.status(409).json({
+        message: "El username o correo ya está registrado."
+      });
     }
 
-    const hash = await bcrypt.hash(password, 10);
-    await pool.query(
-      "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)",
-      [username, email, hash]
+    // La contraseña original nunca se guarda en la base de datos.
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const [result] = await pool.query(
+      `INSERT INTO users (username, email, password_hash, role)
+       VALUES (?, ?, ?, 'USER')`,
+      [normalizedUsername, normalizedEmail, passwordHash]
     );
 
-    return res.status(201).json({ message: "Usuario registrado correctamente." });
-  } catch {
-    return res.status(500).json({ message: "No fue posible registrar el usuario." });
+    const userId = Number((result as any).insertId);
+
+    // Después del registro entregamos la misma sesión que recibiría al iniciar sesión.
+    const token = jwt.sign(
+      {
+        id: userId,
+        username: normalizedUsername,
+        role: "USER"
+      },
+      env.jwtSecret,
+      {
+        expiresIn: "8h"
+      }
+    );
+
+    return res.status(201).json({
+      message: "Cuenta creada correctamente.",
+      token,
+      user: {
+        id: userId,
+        username: normalizedUsername,
+        email: normalizedEmail,
+        role: "USER"
+      }
+    });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "No fue posible crear la cuenta."
+    });
   }
 });
 
@@ -44,67 +90,95 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "El correo y la contraseña son obligatorios."
+      });
+    }
+
+    const normalizedEmail = email.trim().toLowerCase();
+
     const [rows] = await pool.query(
-      "SELECT id, username, password_hash, role FROM users WHERE email = ?",
-      [email]
+      `SELECT id, username, email, password_hash, role
+       FROM users
+       WHERE email = ?
+       LIMIT 1`,
+      [normalizedEmail]
     );
 
     const user = (rows as any[])[0];
 
-    if (!user || !(await bcrypt.compare(password ?? "", user.password_hash))) {
-      return res.status(401).json({ message: "Credenciales incorrectas." });
+    if (!user) {
+      return res.status(401).json({
+        message: "Correo o contraseña incorrectos."
+      });
     }
 
+    const passwordValid = await bcrypt.compare(password, user.password_hash);
+
+    if (!passwordValid) {
+      return res.status(401).json({
+        message: "Correo o contraseña incorrectos."
+      });
+    }
+
+    // El token identifica al usuario en las siguientes solicitudes protegidas.
     const token = jwt.sign(
-      { id: user.id, username: user.username, role: user.role },
+      {
+        id: user.id,
+        username: user.username,
+        role: user.role
+      },
       env.jwtSecret,
-      { expiresIn: "8h" }
+      {
+        expiresIn: "8h"
+      }
     );
 
     return res.json({
+      message: "Inicio de sesión correcto.",
       token,
-      user: { id: user.id, username: user.username, role: user.role }
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      }
     });
-  } catch {
-    return res.status(500).json({ message: "No fue posible iniciar sesión." });
+  } catch (error) {
+    console.error(error);
+
+    return res.status(500).json({
+      message: "No fue posible iniciar sesión."
+    });
   }
 });
 
 router.get("/me", authenticate, async (req, res) => {
-  const [rows] = await pool.query(
-    "SELECT id, username, email, role FROM users WHERE id = ?",
-    [req.user!.id]
-  );
-
-  return res.json((rows as any[])[0]);
-});
-
-router.put("/profile", authenticate, async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const [rows] = await pool.query(
+      `SELECT id, username, email, role
+       FROM users
+       WHERE id = ?
+       LIMIT 1`,
+      [req.user!.id]
+    );
 
-    if (username) {
-      await pool.query("UPDATE users SET username = ? WHERE id = ?", [
-        username,
-        req.user!.id
-      ]);
+    const user = (rows as any[])[0];
+
+    if (!user) {
+      return res.status(404).json({
+        message: "Usuario no encontrado."
+      });
     }
 
-    if (password) {
-      if (password.length < 6) {
-        return res.status(400).json({ message: "La contraseña debe tener al menos 6 caracteres." });
-      }
+    return res.json(user);
+  } catch (error) {
+    console.error(error);
 
-      const hash = await bcrypt.hash(password, 10);
-      await pool.query("UPDATE users SET password_hash = ? WHERE id = ?", [
-        hash,
-        req.user!.id
-      ]);
-    }
-
-    return res.json({ message: "Perfil actualizado." });
-  } catch {
-    return res.status(500).json({ message: "No fue posible actualizar el perfil." });
+    return res.status(500).json({
+      message: "No fue posible consultar el usuario."
+    });
   }
 });
 

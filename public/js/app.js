@@ -223,7 +223,34 @@ document.getElementById("searchBtn")?.addEventListener("click", async () => {
 });
 
 document.getElementById("searchInput")?.addEventListener("keydown", (event) => { if (event.key === "Enter") document.getElementById("searchBtn")?.click(); });
-document.getElementById("loginBtn")?.addEventListener("click", () => alert("El módulo de autenticación se desarrolla en el Sprint 2."));
+function updateAuthButton() {
+  const loginButton = document.getElementById("loginBtn");
+  if (!loginButton) return;
+
+  const token = localStorage.getItem("gamehub_token");
+  const userRaw = localStorage.getItem("gamehub_user");
+
+  if (!token) {
+    loginButton.textContent = "Iniciar sesión";
+    loginButton.onclick = () => {
+      window.location.href = "/login.html";
+    };
+    return;
+  }
+
+  const user = userRaw ? JSON.parse(userRaw) : null;
+  loginButton.textContent = user?.username
+    ? `${user.username} | Cerrar sesión`
+    : "Cerrar sesión";
+
+  loginButton.onclick = () => {
+    localStorage.removeItem("gamehub_token");
+    localStorage.removeItem("gamehub_user");
+    window.location.href = "/";
+  };
+}
+
+updateAuthButton();
 document.getElementById("applyFilters")?.addEventListener("click", () => loadAllGames().catch((error) => alert(error.message)));
 
 (async () => {

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Iniciar sesión | GameHub</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <img src="/logo-transparent.png" alt="GameHub">
+    </a>
+
+    <nav>
+      <a href="/">Inicio</a>
+      <a href="/novedades.html">Novedades</a>
+      <a href="/ofertas.html">Ofertas</a>
+      <a href="/proximamente.html">Próximamente</a>
+      <a href="/todos.html">Todos los juegos</a>
+    </nav>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-card">
+      <div class="auth-header">
+        <p class="eyebrow">GAMEHUB</p>
+        <h1>Iniciar sesión</h1>
+        <p>Accede a tu cuenta para guardar juegos y utilizar las funciones personalizadas.</p>
+      </div>
+
+      <form id="loginForm">
+        <label for="loginEmail">Correo electrónico</label>
+        <input
+          type="email"
+          id="loginEmail"
+          required
+          autocomplete="email"
+        >
+
+        <label for="loginPassword">Contraseña</label>
+        <input
+          type="password"
+          id="loginPassword"
+          required
+          autocomplete="current-password"
+        >
+
+        <button type="submit" class="primary-button">
+          Iniciar sesión
+        </button>
+
+        <p id="loginMessage" class="form-message"></p>
+      </form>
+
+      <div class="auth-switch">
+        <p>¿Todavía no tienes una cuenta?</p>
+        <a href="/register.html">Crear cuenta</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="/js/auth.js"></script>
+</body>
+</html>
