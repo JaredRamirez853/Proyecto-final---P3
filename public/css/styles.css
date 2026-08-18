@@ -674,3 +674,208 @@ button:hover {
   width: 100%;
   padding: 12px 14px;
 }
+
+.admin-page {
+  padding: 40px 32px 70px;
+}
+
+.admin-header {
+  margin-bottom: 30px;
+}
+
+.admin-header h1 {
+  margin: 8px 0;
+  font-size: 36px;
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 1.05fr .95fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.admin-panel {
+  background: #111827;
+  border: 1px solid #263449;
+  border-radius: 14px;
+  padding: 22px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 18px;
+}
+
+.panel-header h2 {
+  margin: 0;
+}
+
+.admin-search {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-search input {
+  flex: 1;
+}
+
+.rawg-results {
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  max-height: 650px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.rawg-card {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid #263449;
+  background: #0f172a;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.rawg-card img {
+  width: 80px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.rawg-card h3 {
+  margin: 0 0 6px;
+}
+
+.rawg-card p {
+  margin: 4px 0;
+  color: #94a3b8;
+}
+
+.admin-form {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.admin-form input,
+.admin-form textarea,
+.admin-form select {
+  width: 100%;
+  padding: 11px 12px;
+  background: #0f172a;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.form-grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.check-row input {
+  width: auto;
+}
+
+@media (max-width: 1000px) {
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-form select,
+.admin-users-panel select,
+.role-select {
+  color: #f8fafc;
+  background: #0f172a;
+  border: 1px solid #475569;
+}
+
+.admin-form select option,
+.admin-users-panel select option,
+.role-select option {
+  color: #f8fafc;
+  background: #0f172a;
+}
+
+.admin-users-panel {
+  margin-top: 22px;
+}
+
+.users-list {
+  display: grid;
+  gap: 10px;
+}
+
+.user-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 12px;
+  border: 1px solid #263449;
+  border-radius: 10px;
+  background: #0f172a;
+}
+
+.user-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-main strong {
+  color: #f8fafc;
+}
+
+.user-main span {
+  color: #94a3b8;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.user-role select {
+  width: 150px;
+}
+
+@media (max-width: 800px) {
+  .user-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .user-role {
+    width: 100%;
+  }
+
+  .user-role select {
+    flex: 1;
+  }
+}

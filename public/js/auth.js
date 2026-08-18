@@ -52,7 +52,11 @@ document.getElementById("loginForm")?.addEventListener("submit", async (event) =
     });
 
     saveSession(result);
-    window.location.href = "/";
+
+    window.location.href =
+      result.user?.role === "ADMIN"
+        ? "/admin"
+        : "/";
   } catch (error) {
     message.textContent = error.message;
   }
