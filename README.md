@@ -66,3 +66,13 @@ npm run db:seed:rawg
 ## Catálogo inicial
 
 El cargador de RAWG prioriza juegos de PC desde 2012, novedades 2025-2026 y próximos lanzamientos, y puede poblar una biblioteca de hasta 300 juegos.
+
+## Automatización de pruebas
+
+GameHub utiliza Jest y Supertest para comprobar validaciones de entrada, protección de rutas, autenticación requerida y operaciones administrativas.
+
+Ejecutar todas las pruebas:
+
+```bash
+npm test
+```

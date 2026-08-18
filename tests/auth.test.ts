@@ -11,6 +11,19 @@ describe("Autenticación", () => {
     expect(response.body.message).toContain("obligatorios");
   });
 
+  it("rechaza un username demasiado corto", async () => {
+    const response = await request(app)
+      .post("/api/auth/register")
+      .send({
+        username: "ab",
+        email: "usuario@example.com",
+        password: "123456"
+      });
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain("3 caracteres");
+  });
+
   it("rechaza una contraseña demasiado corta", async () => {
     const response = await request(app)
       .post("/api/auth/register")
@@ -31,5 +44,12 @@ describe("Autenticación", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.message).toContain("obligatorios");
+  });
+
+  it("protege la consulta del usuario autenticado", async () => {
+    const response = await request(app)
+      .get("/api/auth/me");
+
+    expect(response.status).toBe(401);
   });
 });

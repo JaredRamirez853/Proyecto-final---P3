@@ -6,5 +6,6 @@ module.exports = {
   testMatch: ["**/*.test.ts"],
   moduleFileExtensions: ["ts", "js"],
   testPathIgnorePatterns: ["/node_modules/"],
-  clearMocks: true
+  clearMocks: true,
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"]
 };
